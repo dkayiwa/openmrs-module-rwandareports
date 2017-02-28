@@ -26,49 +26,17 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.rwandareports.reporting.SetupAdultHIVConsultationSheet;
 import org.openmrs.module.rwandareports.reporting.SetupAdultLateVisitAndCD4Report;
-import org.openmrs.module.rwandareports.reporting.SetupAsthmaConsultationSheet;
-import org.openmrs.module.rwandareports.reporting.SetupAsthmaLateVisit;
 import org.openmrs.module.rwandareports.reporting.SetupAsthmaQuarterlyAndMonthReport;
 import org.openmrs.module.rwandareports.reporting.SetupCROWNReports;
-import org.openmrs.module.rwandareports.reporting.SetupChemotherapyDailyExpectedPatientList;
-import org.openmrs.module.rwandareports.reporting.SetupChemotherapyExpectedPatientList;
 import org.openmrs.module.rwandareports.reporting.SetupCombinedHFCSPConsultationReport;
 import org.openmrs.module.rwandareports.reporting.SetupDataEntryDelayReport;
 import org.openmrs.module.rwandareports.reporting.SetupDataQualityIndicatorReport;
-import org.openmrs.module.rwandareports.reporting.SetupDiabetesConsultAndLTFU;
-import org.openmrs.module.rwandareports.reporting.SetupDiabetesQuarterlyAndMonthReport;
 import org.openmrs.module.rwandareports.reporting.SetupEligibleForViralLoadReport;
-import org.openmrs.module.rwandareports.reporting.SetupEpilepsyConsultationSheet;
-import org.openmrs.module.rwandareports.reporting.SetupEpilepsyLateVisit;
 import org.openmrs.module.rwandareports.reporting.SetupExposedClinicInfantMonthly;
-import org.openmrs.module.rwandareports.reporting.SetupHIVResearchDataQualitySheet;
-import org.openmrs.module.rwandareports.reporting.SetupHIVResearchExtractionSheet;
 import org.openmrs.module.rwandareports.reporting.SetupHMISRwandaReportBySite;
-import org.openmrs.module.rwandareports.reporting.SetupHeartFailureConsultSheet;
-import org.openmrs.module.rwandareports.reporting.SetupHeartFailureLateVisit;
-import org.openmrs.module.rwandareports.reporting.SetupHeartFailureQuarterlyAndMonthlyReport;
-import org.openmrs.module.rwandareports.reporting.SetupHypertensionConsultationSheet;
-import org.openmrs.module.rwandareports.reporting.SetupHypertensionLateVisit;
-import org.openmrs.module.rwandareports.reporting.SetupHypertensionQuarterlyAndMonthlyReport;
 import org.openmrs.module.rwandareports.reporting.SetupIDProgramQuarterlyIndicatorReport;
-import org.openmrs.module.rwandareports.reporting.SetupMissedChemotherapyPatientList;
 import org.openmrs.module.rwandareports.reporting.SetupMissingCD4Report;
 import org.openmrs.module.rwandareports.reporting.SetupMonthlyCD4DeclineReport;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyDailyDrugList;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyExternalBiopsyContactList;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyInpatientClinicMissedVisit;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientAppointmentList;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientClinicMissedVisit;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientClinicPatientList;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientExpectedPatientList;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyQuarterlyIndicatorReport;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyTestPatientList;
-import org.openmrs.module.rwandareports.reporting.SetupOncologyTreatmentAdministrationPlan;
-import org.openmrs.module.rwandareports.reporting.SetupPDCIndicatorReport;
-import org.openmrs.module.rwandareports.reporting.SetupPDCMissedVisits;
-import org.openmrs.module.rwandareports.reporting.SetupPDCMonthlyAlert;
-import org.openmrs.module.rwandareports.reporting.SetupPDCMonthlyLTFU;
-import org.openmrs.module.rwandareports.reporting.SetupPDCWeeklyAlert;
 import org.openmrs.module.rwandareports.reporting.SetupPMTCTCombinedClinicMotherMonthlyReport;
 import org.openmrs.module.rwandareports.reporting.SetupPMTCTFoodDistributionReport;
 import org.openmrs.module.rwandareports.reporting.SetupPMTCTFormCompletionSheet;
@@ -79,7 +47,6 @@ import org.openmrs.module.rwandareports.reporting.SetupPediHIVConsultationSheet;
 import org.openmrs.module.rwandareports.reporting.SetupPediatricLateVisitAndCD4Report;
 import org.openmrs.module.rwandareports.reporting.SetupQuarterlyCrossSiteIndicatorByDistrictReport;
 import org.openmrs.module.rwandareports.reporting.SetupQuarterlyViralLoadReport;
-import org.openmrs.module.rwandareports.reporting.SetupRwandaPrimaryCareReport;
 import org.openmrs.module.rwandareports.reporting.SetupTBConsultationSheet;
 
 /**
@@ -127,24 +94,12 @@ public class CleanReportingTablesAndRegisterAllReports {
 		for (String category : classifications) {
 	       if(category.equalsIgnoreCase("HIV")) 
 	    	   registerHIVReports();
-	       else if(category.equalsIgnoreCase("NCD"))
-	    	   registerNCDReports();
-	       else if(category.equalsIgnoreCase("CENTRAL"))
+	        else if(category.equalsIgnoreCase("CENTRAL"))
 	    	   registerCentralReports();
 	       else if(category.equalsIgnoreCase("SITE"))
 	    	   registerSiteReports();
-	       else if(category.equalsIgnoreCase("ONCOLOGY"))
-	    	   registerOncologyReports();
 	       else if(category.equalsIgnoreCase("CHW"))
 	    	   registerCHWReports();
-	       else if(category.equalsIgnoreCase("PC"))
-	       {
-	    	   registerPCReports();
-	       }
-	       else if(category.equalsIgnoreCase("PDC"))
-	       {
-	    	   registerPDCReports();
-	       }
         }
 			
 	}
@@ -168,28 +123,8 @@ public class CleanReportingTablesAndRegisterAllReports {
 			new SetupExposedClinicInfantMonthly().setup();
 			new SetupCROWNReports().setup();
     }
-	public static void registerNCDReports() throws Exception {
-			new SetupAsthmaConsultationSheet().setup();  
-		
-			new SetupDiabetesConsultAndLTFU().setup();
-			new SetupDiabetesQuarterlyAndMonthReport().setup();
-			new SetupAsthmaQuarterlyAndMonthReport().setup();
-			new SetupAsthmaLateVisit().setup();  
-			
-			new SetupEpilepsyConsultationSheet().setup();
-			new SetupEpilepsyLateVisit().setup();
-			new SetupHypertensionConsultationSheet().setup();
-			new SetupHypertensionLateVisit().setup();
-			new SetupHypertensionQuarterlyAndMonthlyReport().setup();
-			
-			new SetupHeartFailureConsultSheet().setup();
-			new SetupHeartFailureLateVisit().setup();
-			new SetupHeartFailureQuarterlyAndMonthlyReport();
-    }
 	public static void registerCentralReports() throws Exception {
-			new SetupHIVResearchDataQualitySheet().setup();
-			new SetupHIVResearchExtractionSheet().setup();
-			new SetupIDProgramQuarterlyIndicatorReport().setup(); 
+			new SetupIDProgramQuarterlyIndicatorReport().setup();
 			new SetupMonthlyCD4DeclineReport().setup();
 			new SetupMissingCD4Report().setup();
 			new SetupQuarterlyCrossSiteIndicatorByDistrictReport().setup();	
@@ -201,33 +136,8 @@ public class CleanReportingTablesAndRegisterAllReports {
 			new SetupDataQualityIndicatorReport().setup();
 			new SetupDataEntryDelayReport().setup();
     }
-	public static void registerOncologyReports() throws Exception {
-			new SetupOncologyTreatmentAdministrationPlan().setup();
-			new SetupChemotherapyExpectedPatientList().setup();
-			new SetupOncologyOutpatientExpectedPatientList().setup();
-			new SetupChemotherapyDailyExpectedPatientList().setup();
-			new SetupOncologyInpatientClinicMissedVisit().setup();
-			new SetupOncologyDailyDrugList().setup();
-			new SetupMissedChemotherapyPatientList().setup();
-			new SetupOncologyOutpatientClinicPatientList().setup();
-			new SetupOncologyOutpatientClinicMissedVisit().setup();
-			new SetupOncologyOutpatientAppointmentList().setup();
-			new SetupOncologyQuarterlyIndicatorReport().setup();
-			new SetupOncologyTestPatientList().setup();
-			new SetupOncologyExternalBiopsyContactList().setup();	
-    }
+
 	public static void registerCHWReports() {
 	    
     }
-	public static void registerPCReports() throws Exception {
-			new SetupRwandaPrimaryCareReport().setup();
-	}
-	public static void registerPDCReports() throws Exception {
-		new SetupPDCWeeklyAlert().setup();
-		new SetupPDCMonthlyAlert().setup();
-		new SetupPDCIndicatorReport().setup();
-		new SetupPDCMonthlyLTFU().setup();
-		new SetupPDCMissedVisits().setup();
-}
-
 }
