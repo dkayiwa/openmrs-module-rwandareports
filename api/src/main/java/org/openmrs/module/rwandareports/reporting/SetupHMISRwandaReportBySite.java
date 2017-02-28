@@ -60,7 +60,7 @@ public class SetupHMISRwandaReportBySite {
         private ProgramWorkflowState pediOnFollowing;
         private ProgramWorkflowState adultOnART;
         private ProgramWorkflowState pediOnART;
-        private ProgramWorkflowState pmtctOnART;
+        //private ProgramWorkflowState pmtctOnART;
         private ProgramWorkflowState pediPreAndArtDiedState;
         private ProgramWorkflowState adultPreAndArtDiedState;
         private ProgramWorkflowState adulttransferedOutState;
@@ -71,7 +71,7 @@ public class SetupHMISRwandaReportBySite {
         private Concept patientDied;
         private Concept patientTransferedOut;
         private Concept patientDefaulted;
-        private Form transferinForm;
+       // private Form transferinForm;
         private List<String> onOrAfterOnOrBefore = new ArrayList<String>();
         private List<String> onOrAfterDateOnOrBeforeDate = new ArrayList<String>();
         private List<EncounterType> clinicalEnountersIncLab;
@@ -199,12 +199,12 @@ public class SetupHMISRwandaReportBySite {
           CodedObsCohortDefinition exitedCareWithtransferStatus = Cohorts.createCodedObsCohortDefinition("exitedCareWithtransferStatus",onOrAfterOnOrBefore, reasonForExitingCare,patientTransferedOut, SetComparator.IN, TimeModifier.LAST);
           CodedObsCohortDefinition exitedCareWithDefaultedStatus = Cohorts.createCodedObsCohortDefinition("exitedCareWithDefaultedStatus",onOrAfterOnOrBefore, reasonForExitingCare,patientDefaulted, SetComparator.IN, TimeModifier.LAST);
           
-          SqlCohortDefinition patientsWithhivTransferVisit = new SqlCohortDefinition();
+          /*SqlCohortDefinition patientsWithhivTransferVisit = new SqlCohortDefinition();
           patientsWithhivTransferVisit.setQuery("select distinct patient_id from encounter where encounter_type="+patientTransferEncounterType.getId()+ " and (form_id="+transferinForm.getFormId()+ ") and encounter_datetime>= :startDate and encounter_datetime<= :endDate and voided=0");
           patientsWithhivTransferVisit.setName("patientsWithhivTransferVisit");
           patientsWithhivTransferVisit.addParameter(new Parameter("startDate", "startDate", Date.class));
           patientsWithhivTransferVisit.addParameter(new Parameter("endDate", "endDate", Date.class));
-         
+         */
           CompositionCohortDefinition everEnrolledInHIVCare = new CompositionCohortDefinition();
           everEnrolledInHIVCare.setName("TR: everEnrolledInHIVCare");
           everEnrolledInHIVCare.getSearches().put("1",new Mapped<CohortDefinition>(onARTStateInPMTCTClinic, null));
@@ -214,7 +214,7 @@ public class SetupHMISRwandaReportBySite {
          //Art States
           List<ProgramWorkflowState> onARTstates = new ArrayList<ProgramWorkflowState>();
           onARTstates.add(adultOnART);
-          onARTstates.add(pediOnART);
+          //onARTstates.add(pediOnART);
           InStateCohortDefinition onARTstatesStateCohort = Cohorts.createInCurrentState("onARTstatesStateCohort", onARTstates,"onDate");
           CompositionCohortDefinition onARTStateHIVClinic = new CompositionCohortDefinition();
           onARTStateHIVClinic.setName("onARTStateHIVClinic");
@@ -222,28 +222,54 @@ public class SetupHMISRwandaReportBySite {
           onARTStateHIVClinic.getSearches().put("2",new Mapped<CohortDefinition>(inPediAndAdultprogram,ParameterizableUtil.createParameterMappings("onDate=${now}")));
           onARTStateHIVClinic.setCompositionString("1 AND 2");
           EncounterCohortDefinition patientTransferEncounter = Cohorts.createEncounterParameterizedByDate("patientTransferEncounter", onOrAfterOnOrBefore,patientTransferEncounterType);
-                       
-          //------------------------------
+
+         AgeCohortDefinition patientWithUnder10=Cohorts.createUnderAgeCohort("patientWithUnder10",10);
+
+         AgeCohortDefinition patientUnder1=Cohorts.createUnderAgeCohort("patientWithUnder1",1);
+
+         AgeCohortDefinition patientWith10To14 = Cohorts.createXtoYAgeCohort("patientWith10To14", 10, 14);
+
+         AgeCohortDefinition patientWith15To19 = Cohorts.createXtoYAgeCohort("patientWith10To14", 15, 19);
+
+         AgeCohortDefinition patienOver20 = Cohorts.createOverXAgeCohort("patienOver20", 20);
+
+         SqlCohortDefinition under15YrsAtEnrol = Cohorts.createUnder15AtEnrollmentCohort("under15YrsAtEnrol", pediatrichivProgram);
+
+         SqlCohortDefinition over15YrsAtEnrol = Cohorts.create15orOverAtEnrollmentCohort("over15YrsAtEnrol", adulthivProgram);
+
+
+         CompositionCohortDefinition nonActivePatients=new CompositionCohortDefinition();
+         nonActivePatients.setName("TR:nonActivePatients");
+         nonActivePatients.getSearches().put("1", new Mapped<CohortDefinition>(exitedCareWithDeadStatus,null));
+         nonActivePatients.getSearches().put("2", new Mapped<CohortDefinition>(exitedCareWithtransferStatus,null));
+         nonActivePatients.getSearches().put("3", new Mapped<CohortDefinition>(exitedCareWithDefaultedStatus,null));
+         nonActivePatients.setCompositionString("1 OR 2 OR 3");
+
+         SqlCohortDefinition startedCotrimoXazoleInPeriod = Cohorts.getPatientsOnRegimenBasedOnStartDateEndDate("startedCotrimoXazoleDuringP", cotrimoxazole);
+
+
+
+          /*//------------------------------
           //     PRE-ART START
           //------------------------------ 
          
           //1.1 (NEW) Total number of males patients  (<10 years old) currently in Pre-ART
           AgeCohortDefinition patientWithUnder10=Cohorts.createUnderAgeCohort("patientWithUnder10",10);
-          
+
           CompositionCohortDefinition malecurrentlyinPreArt = new CompositionCohortDefinition();
           malecurrentlyinPreArt.setName("malecurrentlyinPreArt");
           malecurrentlyinPreArt.addParameter(new Parameter("onDate", "onDate", Date.class));
           malecurrentlyinPreArt.getSearches().put("1",new Mapped<CohortDefinition>(onFollowingStateCohort,ParameterizableUtil.createParameterMappings("onDate=${now}")));
           malecurrentlyinPreArt.getSearches().put("2",new Mapped<CohortDefinition>(maleCohort, null));
           malecurrentlyinPreArt.setCompositionString("1 AND 2");
-          
+
           CompositionCohortDefinition malePreArtunder10 = new CompositionCohortDefinition();
           malePreArtunder10.setName("malePreArtunder10");
           malePreArtunder10.getSearches().put("1",new Mapped<CohortDefinition>(malecurrentlyinPreArt,ParameterizableUtil.createParameterMappings("onDate=${now}")));
           malePreArtunder10.getSearches().put("2",new Mapped<CohortDefinition>(patientWithUnder10, null));
           malePreArtunder10.setCompositionString("1 AND 2");
           CohortIndicator malePreArtunder10Ind=Indicators.newCohortIndicator("malePreArtunder10Ind",malePreArtunder10, null);
-          
+
           //1.2 (NEW) Total number of females patients  (<10 years old) currently in Pre-ART
           CompositionCohortDefinition femalecurrentlyinPreArt = new CompositionCohortDefinition();
           femalecurrentlyinPreArt.setName("femalecurrentlyinPreArt");
@@ -261,7 +287,7 @@ public class SetupHMISRwandaReportBySite {
           
           // 1.3 (NEW) Total number of males patients  ( aged between 10-14 years) currently in Pre-ART
          // AgeCohortDefinition patientWith10To14=Cohorts.create10to14AgeCohort("patientWith10To14");
-          AgeCohortDefinition patientWith10To14 = Cohorts.createXtoYAgeCohort("patientWith10To14", 10, 14);
+
           
           CompositionCohortDefinition malePreArtbetween10and14 = new CompositionCohortDefinition();
           malePreArtbetween10and14.setName("malePreArtbetween10and14");
@@ -320,8 +346,6 @@ public class SetupHMISRwandaReportBySite {
           
           //SqlCohortDefinition under18monthsAtEnrol = Cohorts.createUnder18monthsAtEnrollmentCohort("under18monthsAtEnrol", pediatrichivProgram);
           //SqlCohortDefinition under5YrsAtEnrol = Cohorts.createUnder5AtEnrollmentCohort("under5YrsAtEnrol", pediatrichivProgram);
-          SqlCohortDefinition under15YrsAtEnrol = Cohorts.createUnder15AtEnrollmentCohort("under15YrsAtEnrol", pediatrichivProgram);
-          SqlCohortDefinition over15YrsAtEnrol = Cohorts.create15orOverAtEnrollmentCohort("over15YrsAtEnrol", adulthivProgram);
          // SqlCohortDefinition enrolledInAdultProgram = Cohorts.createPatientInProgramDuringTime("Enrolled In adult HIV Program");
          
           // 2.1 Total number of male patients(<15 years old) newly enrolled in Pre ART  this month
@@ -365,13 +389,7 @@ public class SetupHMISRwandaReportBySite {
           femalespedinewlyEnrolledInPreartInd.addParameter(new Parameter("onOrBefore","onOrBefore",Date.class));
          
           //2.3 Total number of male patients(15 years old and above) newly enrolled in Pre ART  this month
-          CompositionCohortDefinition nonActivePatients=new CompositionCohortDefinition();
-          nonActivePatients.setName("TR:nonActivePatients");
-          nonActivePatients.getSearches().put("1", new Mapped<CohortDefinition>(exitedCareWithDeadStatus,null));
-          nonActivePatients.getSearches().put("2", new Mapped<CohortDefinition>(exitedCareWithtransferStatus,null));
-          nonActivePatients.getSearches().put("3", new Mapped<CohortDefinition>(exitedCareWithDefaultedStatus,null));
-          nonActivePatients.setCompositionString("1 OR 2 OR 3");
-          
+
           CompositionCohortDefinition adultpreArtduringPeriod = new CompositionCohortDefinition();
           adultpreArtduringPeriod.addParameter(new Parameter("onOrAfter","onOrAfter",Date.class));
           adultpreArtduringPeriod.addParameter(new Parameter("onOrBefore","onOrBefore",Date.class));
@@ -418,7 +436,6 @@ public class SetupHMISRwandaReportBySite {
           onArtAndPreArtStates.add(adultOnFollowing);
           onArtAndPreArtStates.add(pediOnFollowing);
           InStateCohortDefinition onARTandPreARTstatesStateCohort = Cohorts.createInCurrentState("onARTstatesStateCohort", onArtAndPreArtStates,"onDate");
-          SqlCohortDefinition startedCotrimoXazoleInPeriod = Cohorts.getPatientsOnRegimenBasedOnStartDateEndDate("startedCotrimoXazoleDuringP", cotrimoxazole);
           SqlCohortDefinition startedDapsoneinPeriod = Cohorts.getPatientsOnRegimenBasedOnStartDateEndDate("startedDapsone", dapsone);
           
           CompositionCohortDefinition preArtAndARTOnCotrimoComp = new CompositionCohortDefinition();
@@ -569,7 +586,7 @@ public class SetupHMISRwandaReportBySite {
            patientsTransferedIntAndnotOnARTInd.addParameter(new Parameter("enrolledOnOrAfter", "enrolledOnOrAfter", Date.class));
            patientsTransferedIntAndnotOnARTInd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
            patientsTransferedIntAndnotOnARTInd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-  
+  */
          // -------------------------------------------
           //       ART CATEGORY
           //-------------------------------------------
@@ -583,8 +600,8 @@ public class SetupHMISRwandaReportBySite {
           onARTStateatTheEnd.setCompositionString("1 AND 2");
           
           List<ProgramWorkflowState> onArtatState = new ArrayList<ProgramWorkflowState>();
-          OnFollowingstates.add(adultOnART);
-          OnFollowingstates.add(pediOnART);
+         onArtatState.add(adultOnART);
+         onArtatState.add(pediOnART);
           InStateCohortDefinition onArtatStateCohort = Cohorts.createInCurrentState("TR:onFollowingStateCohort", onArtatState,"onDate");
           
           //1.1 Total number of males patients (< 1 years old) currently on ART
@@ -599,7 +616,7 @@ public class SetupHMISRwandaReportBySite {
           CompositionCohortDefinition maleArtunder1 = new CompositionCohortDefinition();
           maleArtunder1.setName("maleArtunder1");
           maleArtunder1.getSearches().put("1",new Mapped<CohortDefinition>(malecurrentlyinArt,ParameterizableUtil.createParameterMappings("onDate=${now}")));
-          maleArtunder1.getSearches().put("2",new Mapped<CohortDefinition>(patientWithUnder10, null));
+          maleArtunder1.getSearches().put("2",new Mapped<CohortDefinition>(patientUnder1, null));
           maleArtunder1.setCompositionString("1 AND 2");
           CohortIndicator maleArtunder1Ind=Indicators.newCohortIndicator("maleArtunder1Ind",maleArtunder1, null);
          
@@ -794,7 +811,7 @@ public class SetupHMISRwandaReportBySite {
           
         //3.2 Number of new adult patients (15 years and above) who initiated ART this month
           SqlCohortDefinition over15yearsAtstartOfArtAd = Cohorts.createOver15yrsAtStartOfArtbyStartEndDate("TR:over15yearsAtstartOfArtAd", adulthivProgram, adultOnART);
-          SqlCohortDefinition over15yearsAtstartOfArtPMTCT = Cohorts.createOver15yrsAtStartOfArtbyStartEndDate("TR:over15yearsAtstartOfArtPMTCT", pmtctPregnancyProgram, pmtctOnART);
+          //SqlCohortDefinition over15yearsAtstartOfArtPMTCT = Cohorts.createOver15yrsAtStartOfArtbyStartEndDate("TR:over15yearsAtstartOfArtPMTCT", pmtctPregnancyProgram, pmtctOnART);
           SqlCohortDefinition patientstakingARTfortheFirstTimes = Cohorts.getPatientsWithFirstDrugOrdersOnlyDurindStartEndDate("patientstakingARTfortheFirstTimes");
      	  CompositionCohortDefinition patientneverTakenorStoppedOnARTBeforeComp= new CompositionCohortDefinition();
           patientneverTakenorStoppedOnARTBeforeComp.setName("TR:patientneverTakenorStoppedOnARTBeforeComp");
@@ -811,9 +828,9 @@ public class SetupHMISRwandaReportBySite {
           adultsEnrolledInPMTCNewToArtorMotherProg.addParameter(new Parameter("startDate", "startDate",Date.class));
           adultsEnrolledInPMTCNewToArtorMotherProg.addParameter(new Parameter("endDate", "endDate", Date.class));
           adultsEnrolledInPMTCNewToArtorMotherProg.getSearches().put("1",new Mapped<CohortDefinition>(over15yearsAtstartOfArtAd,ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")));
-          adultsEnrolledInPMTCNewToArtorMotherProg.getSearches().put("2",new Mapped<CohortDefinition>(over15yearsAtstartOfArtPMTCT,ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")));
-          adultsEnrolledInPMTCNewToArtorMotherProg.getSearches().put("3",new Mapped<CohortDefinition>(patientneverTakenorStoppedOnARTBeforeComp,ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrAfter}")));
-          adultsEnrolledInPMTCNewToArtorMotherProg.setCompositionString("(1 OR 2 OR 3");
+          //adultsEnrolledInPMTCNewToArtorMotherProg.getSearches().put("3",new Mapped<CohortDefinition>(over15yearsAtstartOfArtPMTCT,ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")));
+          adultsEnrolledInPMTCNewToArtorMotherProg.getSearches().put("2",new Mapped<CohortDefinition>(patientneverTakenorStoppedOnARTBeforeComp,ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrAfter}")));
+          adultsEnrolledInPMTCNewToArtorMotherProg.setCompositionString("(1 OR 2");
           CohortIndicator adultsEnrolledInPMTCNewToArtorMotherProgInd=Indicators.newCohortIndicator("adultsEnrolledInPMTCNewToArtorMotherProgInd", adultsEnrolledInPMTCNewToArtorMotherProg, 
         		  ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrAfter},startDate=${startDate},endDate=${endDate}"));
           adultsEnrolledInPMTCNewToArtorMotherProgInd.addParameter(new Parameter("onOrAfter", "onOrAfter",Date.class));
@@ -920,7 +937,7 @@ public class SetupHMISRwandaReportBySite {
            
            //8 Number of  patients (all ages and both sex) on ART transfered out this  month 
            SqlCohortDefinition pediOnArtBeforeTranferedFromCare = Cohorts.createArtOrPreArtAndActiveonPatientDiedORTransferedStateDuringPeriod("pediOnArtBeforeTranferedFromCare", pediatrichivProgram,pediOnART,peditransferedOutState);
-           SqlCohortDefinition adultOnArtBeforeTransferedFromCare = Cohorts.createArtOrPreArtAndActiveonPatientDiedORTransferedStateDuringPeriod("adultOnArtBeforeTransferedFromCare", adulthivProgram,adultOnART,adulttransferedOutState);        
+           SqlCohortDefinition adultOnArtBeforeTransferedFromCare = Cohorts.createArtOrPreArtAndActiveonPatientDiedORTransferedStateDuringPeriod("adultOnArtBeforeTransferedFromCare", adulthivProgram,adultOnART,adulttransferedOutState);
            
            CompositionCohortDefinition patientArtTrasferedOut = new CompositionCohortDefinition();
            patientArtTrasferedOut.setName("patientArtTrasferedOut");
@@ -996,7 +1013,7 @@ public class SetupHMISRwandaReportBySite {
            
            //Add global filters to the report
            //PRE-ART DATA ELEMENT
-           dsd.addColumn("1.1","rwandareports.tracnetreport.indicator.preart.currentMalespreArt",new Mapped(malePreArtunder10Ind,null), "");
+          /* dsd.addColumn("1.1","rwandareports.tracnetreport.indicator.preart.currentMalespreArt",new Mapped(malePreArtunder10Ind,null), "");
            dsd.addColumn("1.2","rwandareports.tracnetreport.indicator.preart.currentFemalespreArt",new Mapped(femalePreArtunder10Ind,null), "");
            dsd.addColumn("1.3","rwandareports.tracnetreport.indicator.preart.currentMales10to14preArt",new Mapped(malePreArtbetween10and14Ind,null), "");
            dsd.addColumn("1.4","rwandareports.tracnetreport.indicator.preart.currentFemales10to14preArt",new Mapped(femalePreArtbetween10and14Ind,null), "");
@@ -1016,10 +1033,10 @@ public class SetupHMISRwandaReportBySite {
            dsd.addColumn("8","rwandareports.tracnetreport.indicator.preart.patientsInPreARVDiedThisMonth",new Mapped(patientsDiedandNotOnARTInd,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),"");
            dsd.addColumn("9","rwandareports.tracnetreport.indicator.preart.patientsInPreARVTransferredOutThisMonth",new Mapped(patientsTransferedoutAndnotOnARTInd,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),"");
            dsd.addColumn("10","rwandareports.tracnetreport.indicator.preart.patientsInPreARVTransferredInThisMonth",new Mapped(patientsTransferedIntAndnotOnARTInd,ParameterizableUtil.createParameterMappings("enrolledOnOrAfter=${startDate},onOrAfter=${startDate},onOrBefore=${endDate}")),"");  
-                              
+        */
            // ART DATA ELEMENTS
            dsd.addColumn("1b.1","rwandareports.tracnetreport.indicator.art.malesUnder1yrCurrentOnArv",new Mapped(maleArtunder1Ind,null),"");
-           dsd.addColumn("1b.2","rwandareports.tracnetreport.indicator.art.femalesUnder1yrCurrentOnArv",new Mapped(femaleArtunder1Ind,null),"");  
+           /*dsd.addColumn("1b.2","rwandareports.tracnetreport.indicator.art.femalesUnder1yrCurrentOnArv",new Mapped(femaleArtunder1Ind,null),"");
            dsd.addColumn("1b.3","rwandareports.tracnetreport.indicator.art.malePeds1to4CurrentOnArv",new Mapped(malePreArtbetween1To4Ind,null),"");  
            dsd.addColumn("1b.4","rwandareports.tracnetreport.indicator.art.femalePeds1to4CurrentOnArv",new Mapped(femalePreArtbetween1To4Ind,null),"");  
            dsd.addColumn("1b.5","rwandareports.tracnetreport.indicator.art.malePeds5to9CurrentOnArv",new Mapped(malePreArtbetween5To9Ind,null),"");
@@ -1054,21 +1071,21 @@ public class SetupHMISRwandaReportBySite {
            // EXPOSED INFANT
            dsd.addColumn("1c","rwandareports.tracnetreport.indicator.infantHivPosMothersAged6WeeksThisMonth",new Mapped(sixWeeksInfantsInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")),"");  
            dsd.addColumn("2c","rwandareports.tracnetreport.indicator.infantHivPosMothersAged6WeeksThisMonthonCotrimo",new Mapped(patientsonCotrimoAt6WeeksInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")),"");  
-          
+          */
            return dsd;     
         }
         
         private void setupProperties() {
             adulthivProgram = gp.getProgram(GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
-            pediatrichivProgram = gp.getProgram(GlobalPropertiesManagement.PEDI_HIV_PROGRAM);
-            pmtctcombinedMother = gp.getProgram(GlobalPropertiesManagement.PMTCT_COMBINED_MOTHER_PROGRAM);
+           pediatrichivProgram = gp.getProgram(GlobalPropertiesManagement.PEDI_HIV_PROGRAM);
+           // pmtctcombinedMother = gp.getProgram(GlobalPropertiesManagement.PMTCT_COMBINED_MOTHER_PROGRAM);
             pmtctPregnancyProgram=gp.getProgram(GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);
             pmtctCombinedInfantProgram = gp.getProgram(GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
             adultOnFollowing = gp.getProgramWorkflowState(GlobalPropertiesManagement.FOLLOWING_STATE,GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
             pediOnFollowing = gp.getProgramWorkflowState(GlobalPropertiesManagement.FOLLOWING_STATE,GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,GlobalPropertiesManagement.PEDI_HIV_PROGRAM);
             adultOnART = gp.getProgramWorkflowState(GlobalPropertiesManagement.ON_ANTIRETROVIRALS_STATE,GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
             pediOnART = gp.getProgramWorkflowState(GlobalPropertiesManagement.ON_ANTIRETROVIRALS_STATE,GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,GlobalPropertiesManagement.PEDI_HIV_PROGRAM);
-            pmtctOnART = gp.getProgramWorkflowState(GlobalPropertiesManagement.ON_ANTIRETROVIRALS_STATE,GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);
+            //pmtctOnART = gp.getProgramWorkflowState(GlobalPropertiesManagement.ON_ANTIRETROVIRALS_STATE,GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);
             adulttransferedOutState = gp.getProgramWorkflowState(GlobalPropertiesManagement.TRANSFERRED_OUT_STATE,GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
             peditransferedOutState = gp.getProgramWorkflowState(GlobalPropertiesManagement.TRANSFERRED_OUT_STATE,GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,GlobalPropertiesManagement.PEDI_HIV_PROGRAM);
             pediPreAndArtDiedState = gp.getProgramWorkflowState(GlobalPropertiesManagement.PATIENT_DIED_STATE,GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,GlobalPropertiesManagement.PEDI_HIV_PROGRAM);
@@ -1077,6 +1094,9 @@ public class SetupHMISRwandaReportBySite {
             onOrAfterOnOrBefore.add("onOrBefore");
             onOrAfterDateOnOrBeforeDate.add("onOrAfterDate");
             onOrAfterDateOnOrBeforeDate.add("onOrBeforeDate");
+
+
+
             tbScreeningtest = gp.getConcept(GlobalPropertiesManagement.TB_SCREENING_TEST);
             positiveStatus = gp.getConcept(GlobalPropertiesManagement.POSITIVE_HIV_TEST_ANSWER);
             reasonForExitingCare= gp.getConcept(GlobalPropertiesManagement.REASON_FOR_EXITING_CARE);
@@ -1085,12 +1105,12 @@ public class SetupHMISRwandaReportBySite {
             patientDefaulted=MetadataLookup.getConcept("PIH:1743");
             clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
             pediAdnAdultEncounters=gp.getEncounterTypeList(GlobalPropertiesManagement.PEDIANDADULTHIV_ENCOUNTER_TYPES);
-             transferinForm=gp.getForm(GlobalPropertiesManagement.HIV_TRANSFER_FORM);
+           //transferinForm=gp.getForm(GlobalPropertiesManagement.HIV_TRANSFER_FORM);
             patientTransferEncounterType = gp.getEncounterType(GlobalPropertiesManagement.PATIENT_TRANSFER_ENCOUNTER);
             kaletra = gp.getConcept(GlobalPropertiesManagement.KALETRA_DRUG);
             cotrimoxazole = gp.getConcept(GlobalPropertiesManagement.COTRIMOXAZOLE_DRUG);
             dapsone=gp.getConcept(GlobalPropertiesManagement.DAPSONE_DRUG);
-           
+
         }
         
 }

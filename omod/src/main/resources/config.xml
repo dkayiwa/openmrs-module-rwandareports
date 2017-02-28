@@ -3782,5 +3782,9 @@
 		<defaultValue>43539cee-6f90-4ffa-ba25-0338105783a3</defaultValue>
 		<description>This is the concept Id of ZSCORE_LESS_THAN_NEGATIVE_THREE</description>
 	</globalProperty>
-
+	<globalProperty>
+		<property>reports.pedihivprogramname</property>
+		<defaultValue>PEDIATRIC HIV PROGRAM</defaultValue>
+		<description>The program name for the pediatric hiv program</description>
+	</globalProperty>
 </module>
