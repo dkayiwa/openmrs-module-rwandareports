@@ -1036,42 +1036,47 @@ public class SetupHMISRwandaReportBySite {
         */
            // ART DATA ELEMENTS
            dsd.addColumn("1b.1","rwandareports.tracnetreport.indicator.art.malesUnder1yrCurrentOnArv",new Mapped(maleArtunder1Ind,null),"");
-           /*dsd.addColumn("1b.2","rwandareports.tracnetreport.indicator.art.femalesUnder1yrCurrentOnArv",new Mapped(femaleArtunder1Ind,null),"");
-           dsd.addColumn("1b.3","rwandareports.tracnetreport.indicator.art.malePeds1to4CurrentOnArv",new Mapped(malePreArtbetween1To4Ind,null),"");  
-           dsd.addColumn("1b.4","rwandareports.tracnetreport.indicator.art.femalePeds1to4CurrentOnArv",new Mapped(femalePreArtbetween1To4Ind,null),"");  
+           dsd.addColumn("1b.2","rwandareports.tracnetreport.indicator.art.femalesUnder1yrCurrentOnArv",new Mapped(femaleArtunder1Ind,null),"");
+           dsd.addColumn("1b.3","rwandareports.tracnetreport.indicator.art.malePeds1to4CurrentOnArv",new Mapped(malePreArtbetween1To4Ind,null),"");
+           dsd.addColumn("1b.4","rwandareports.tracnetreport.indicator.art.femalePeds1to4CurrentOnArv",new Mapped(femalePreArtbetween1To4Ind,null),"");
            dsd.addColumn("1b.5","rwandareports.tracnetreport.indicator.art.malePeds5to9CurrentOnArv",new Mapped(malePreArtbetween5To9Ind,null),"");
            dsd.addColumn("1b.6","rwandareports.tracnetreport.indicator.art.femalePeds5to9CurrentOnArv",new Mapped(femalePreArtbetween5To9Ind,null),"");
            dsd.addColumn("1b.7","rwandareports.tracnetreport.indicator.art.malePeds10to14CurrentOnArv",new Mapped(maleArtbetween10and14Ind,null),"");
            dsd.addColumn("1b.8","rwandareports.tracnetreport.indicator.art.femalePeds10to14CurrentOnArv",new Mapped(femaleArtbetween10and14Ind,null),"");
            dsd.addColumn("1b.9","rwandareports.tracnetreport.indicator.art.male15to19CurrentOnArv",new Mapped(maleArtbetween15and19Ind,null),"");
-           dsd.addColumn("1b.10","rwandareports.tracnetreport.indicator.art.female15to19CurrentOnArv",new Mapped(femaleArtbetween15and19Ind,null),""); 
-           dsd.addColumn("1b.11","rwandareports.tracnetreport.indicator.art.male20orAboveCurrentOnArv",new Mapped(maleArtbetweenabove20Ind,null), "");  
-           dsd.addColumn("1b.12","rwandareports.tracnetreport.indicator.art.female20orAboveCurrentOnArv",new Mapped(femaleArtbetweenabove20Ind,null), ""); 
-           dsd.addColumn("2b.1","rwandareports.tracnetreport.indicator.art.patientsonFirstLine",new Mapped(notOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},dateborn=${endDate},onOrBefore=${endDate}")), "");  
+           dsd.addColumn("1b.10","rwandareports.tracnetreport.indicator.art.female15to19CurrentOnArv",new Mapped(femaleArtbetween15and19Ind,null),"");
+           dsd.addColumn("1b.11","rwandareports.tracnetreport.indicator.art.male20orAboveCurrentOnArv",new Mapped(maleArtbetweenabove20Ind,null), "");
+           dsd.addColumn("1b.12","rwandareports.tracnetreport.indicator.art.female20orAboveCurrentOnArv",new Mapped(femaleArtbetweenabove20Ind,null), "");
+           /*dsd.addColumn("2b.1","rwandareports.tracnetreport.indicator.art.patientsonFirstLine",new Mapped(notOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},dateborn=${endDate},onOrBefore=${endDate}")), "");
            dsd.addColumn("2b.2","rwandareports.tracnetreport.indicator.art.patientsonSecondLine",new Mapped(activeOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},dateborn=${endDate},onOrBefore=${endDate}")), "");
-          //dsd.addColumn("2.3","rwandareports.tracnetreport.indicator.art.patientsonThirdLine",new Mapped(pediOnArtStateinWhostage4Ind,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),"");
+*/
+            //dsd.addColumn("2.3","rwandareports.tracnetreport.indicator.art.patientsonThirdLine",new Mapped(pediOnArtStateinWhostage4Ind,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),"");
            dsd.addColumn("2b.4","rwandareports.tracnetreport.indicator.art.adults10to19onFirstLine",new Mapped(patients10and19on1stLineInd,ParameterizableUtil.createParameterMappings("endDate=${endDate}")),"");
-           dsd.addColumn("2b.5","rwandareports.tracnetreport.indicator.art.adults10to19onSecondLine",new Mapped(patients10and19on2ndLineInd,ParameterizableUtil.createParameterMappings("endDate=${endDate}")),"");  
-          // dsd.addColumn("2.6","rwandareports.tracnetreport.indicator.art.adults10to19onThirdLine",new Mapped(pediOnArtStateinWhostage1Ind,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),""); 
-           dsd.addColumn("2b.7","rwandareports.tracnetreport.indicator.art.adults15orMoreFirstLine",new Mapped(notoadultsOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("dateborn=${endDate},endDate=${endDate}")),""); 
+           dsd.addColumn("2b.5","rwandareports.tracnetreport.indicator.art.adults10to19onSecondLine",new Mapped(patients10and19on2ndLineInd,ParameterizableUtil.createParameterMappings("endDate=${endDate}")),"");
+          // dsd.addColumn("2.6","rwandareports.tracnetreport.indicator.art.adults10to19onThirdLine",new Mapped(pediOnArtStateinWhostage1Ind,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),"");
+           /*dsd.addColumn("2b.7","rwandareports.tracnetreport.indicator.art.adults15orMoreFirstLine",new Mapped(notoadultsOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("dateborn=${endDate},endDate=${endDate}")),"");
            dsd.addColumn("2b.8","rwandareports.tracnetreport.indicator.art.adults15orMoreSecondLine",new Mapped(adultonCurrentKaletraDrugOrderCompoInd,ParameterizableUtil.createParameterMappings("dateborn=${endDate},endDate=${endDate}")),"");
-           //dsd.addColumn("2.9","rwandareports.tracnetreport.indicator.art.adults15orMoreThirdLine",new Mapped(maleAdultsadultsOnArtStateInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");  
-           dsd.addColumn("3b.1","rwandareports.tracnetreport.indicator.art.pedsNewonART",new Mapped(femalesPedsNotOnArtStateNotOnFolowingInd,ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),"");  
+           */
+            //dsd.addColumn("2.9","rwandareports.tracnetreport.indicator.art.adults15orMoreThirdLine",new Mapped(maleAdultsadultsOnArtStateInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+           /* dsd.addColumn("3b.1","rwandareports.tracnetreport.indicator.art.pedsNewonART",new Mapped(femalesPedsNotOnArtStateNotOnFolowingInd,ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),"");
            dsd.addColumn("3b.2","rwandareports.tracnetreport.indicator.art.adultsNewonART",new Mapped(adultsEnrolledInPMTCNewToArtorMotherProgInd,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate}")),"");
-          dsd.addColumn("4b","rwandareports.tracnetreport.indicator.art.arvPedsDiedThisMonth",new Mapped(patientsDiedNotOnARTInd,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate}")),"");
-           dsd.addColumn("5b.1","rwandareports.tracnetreport.indicator.art.malesPediCurrenltyonArtnewOnTB",new Mapped(malesPediCurentlyinARTNewtoTBInd,ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),""); 
-           dsd.addColumn("5b.2","rwandareports.tracnetreport.indicator.art.femalesPediCurrenltyonArtnewOnTB",new Mapped(femalesPediCurentlyinARTNewtoTBInd,ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),""); 
+        */
+            dsd.addColumn("4b","rwandareports.tracnetreport.indicator.art.arvPedsDiedThisMonth",new Mapped(patientsDiedNotOnARTInd,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate}")),"");
+
+           dsd.addColumn("5b.1","rwandareports.tracnetreport.indicator.art.malesPediCurrenltyonArtnewOnTB",new Mapped(malesPediCurentlyinARTNewtoTBInd,ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),"");
+           dsd.addColumn("5b.2","rwandareports.tracnetreport.indicator.art.femalesPediCurrenltyonArtnewOnTB",new Mapped(femalesPediCurentlyinARTNewtoTBInd,ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),"");
            dsd.addColumn("5b.3","rwandareports.tracnetreport.indicator.art.malesAdultsCurrenltyonArtnewOnTB",new Mapped(malesAdultsCurentlyinARTNewtoTBInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
            dsd.addColumn("5b.4","rwandareports.tracnetreport.indicator.art.femalesAdultsCurrenltyonArtnewOnTB",new Mapped(femalesAdultsCurentlyinARTNewtoTBInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
-           dsd.addColumn("6b","rwandareports.tracnetreport.indicator.art.arvLostFollowupMoreThreeMonths",new Mapped(pedsOnArtLostAndwithHIVFormsInd,ParameterizableUtil.createParameterMappings("onOrAfterDate=${startDate-3m},onOrBeforeDate=${endDate},onOrBefore=${endDate}")), ""); 
+           dsd.addColumn("6b","rwandareports.tracnetreport.indicator.art.arvLostFollowupMoreThreeMonths",new Mapped(pedsOnArtLostAndwithHIVFormsInd,ParameterizableUtil.createParameterMappings("onOrAfterDate=${startDate-3m},onOrBeforeDate=${endDate},onOrBefore=${endDate}")), "");
            dsd.addColumn("7b","rwandareports.tracnetreport.indicator.art.arvLostFollowupRetracedThisMonths",new Mapped(patientsinLostAndBackToProgramThismonthARTInd,ParameterizableUtil.createParameterMappings("onOrBefore=${endDate},startDate=${startDate},endDate=${endDate}")),"");
            dsd.addColumn("8b","rwandareports.tracnetreport.indicator.art.arvAdultTransferredOutThisMonth",new Mapped(pedionARTTransferedOutDuringPInd,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate}")),"");
-           dsd.addColumn("9b","rwandareports.tracnetreport.indicator.art.arvPedsTransferredInThisMonth",new Mapped(pedionWithTransferInFormInd,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),"");  
-          
+           dsd.addColumn("9b","rwandareports.tracnetreport.indicator.art.arvPedsTransferredInThisMonth",new Mapped(pedionWithTransferInFormInd,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),"");
+
            // EXPOSED INFANT
-           dsd.addColumn("1c","rwandareports.tracnetreport.indicator.infantHivPosMothersAged6WeeksThisMonth",new Mapped(sixWeeksInfantsInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")),"");  
-           dsd.addColumn("2c","rwandareports.tracnetreport.indicator.infantHivPosMothersAged6WeeksThisMonthonCotrimo",new Mapped(patientsonCotrimoAt6WeeksInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")),"");  
-          */
+           dsd.addColumn("1c","rwandareports.tracnetreport.indicator.infantHivPosMothersAged6WeeksThisMonth",new Mapped(sixWeeksInfantsInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")),"");
+           dsd.addColumn("2c","rwandareports.tracnetreport.indicator.infantHivPosMothersAged6WeeksThisMonthonCotrimo",new Mapped(patientsonCotrimoAt6WeeksInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")),"");
+
            return dsd;     
         }
         
