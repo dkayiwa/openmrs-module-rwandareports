@@ -91,21 +91,21 @@ $(document).ready(function(){
 <td colspan="2"><center>Action</center></td>
 </tr>
 <tr>
-<td rowspan="3" class="tabletd">PIH Reports</td>
-<td>PIH-Boston Indicators-Quarterly	
+<td rowspan="3" class="tabletd"> Routine Reports</td>
+<td>Indicators-Quarterly
 </td>
-<td>Central</td>
+<td>Central</td>I
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/register_quarterlyCrossDistrictIndicator.form" onclick=msgreg(this)>(Re) register</a></td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_quarterlyCrossDistrictIndicator.form" onclick=msgrem(this)>Remove</a></td>
 </tr>
 <tr>
-<td>PIH-Boston Viral Load Indicators-Quarterly</td>
+<td>Load Indicators-Quarterly</td>
 <td>Central</td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/register_viralLoad.form" onclick=msgreg(this)>(Re) register</a></td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_viralLoad.form" onclick=msgrem(this)>Remove</a></td>	
 </tr>
 <tr>
-<td>PIH-Eligible For Viral Load</td>
+<td>Eligible For Viral Load</td>
 <td>Central</td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/register_eligibleForViralLoadReport.form" onclick=msgreg(this)>(Re) register</a></td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_eligibleForViralLoadReport.form" onclick=msgrem(this)>Remove</a></td>	

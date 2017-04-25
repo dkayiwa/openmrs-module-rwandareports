@@ -90,7 +90,7 @@ public class SetupGenericPatientByProgramReport {
 		dataSetDefinition.addColumn(systemId, new HashMap<String, Object>());
 		
 		
-		MultiplePatientDataDefinitions imbType = RowPerPatientColumns.getIMBId("IMB ID");
+		MultiplePatientDataDefinitions imbType = RowPerPatientColumns.getTracnetId ("TRACNET ID");
 		dataSetDefinition.addColumn(imbType, new HashMap<String, Object>());
 		
 		PatientAddress address1 = RowPerPatientColumns.getPatientAddress("Address", true, true, true, false,false);

@@ -51,6 +51,7 @@ public class SetupHMISRwandaReportBySite {
         GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
         //MetadataLookup mlookup=new MetadataLookup();
      // properties
+        private ProgramWorkflowState patientsOnFirstLine;
         private Program adulthivProgram;
         private Program pediatrichivProgram;
         private Program pmtctcombinedMother;
@@ -214,6 +215,11 @@ public class SetupHMISRwandaReportBySite {
          //Art States
           List<ProgramWorkflowState> onARTstates = new ArrayList<ProgramWorkflowState>();
           onARTstates.add(adultOnART);
+          // First Line
+
+         List<ProgramWorkflowState> onFirstLineStates = new ArrayList<ProgramWorkflowState>();
+         onFirstLineStates.add(patientsOnFirstLine);
+
           //onARTstates.add(pediOnART);
           InStateCohortDefinition onARTstatesStateCohort = Cohorts.createInCurrentState("onARTstatesStateCohort", onARTstates,"onDate");
           CompositionCohortDefinition onARTStateHIVClinic = new CompositionCohortDefinition();
@@ -600,11 +606,17 @@ public class SetupHMISRwandaReportBySite {
           onARTStateatTheEnd.setCompositionString("1 AND 2");
           
           List<ProgramWorkflowState> onArtatState = new ArrayList<ProgramWorkflowState>();
-         onArtatState.add(adultOnART);
-         onArtatState.add(pediOnART);
+          onArtatState.add(adultOnART);
+          onArtatState.add(pediOnART);
           InStateCohortDefinition onArtatStateCohort = Cohorts.createInCurrentState("TR:onFollowingStateCohort", onArtatState,"onDate");
-          
+
+         // FIRST LINE
+
+        // InStateCohortDefinition onFirstLine = Cohorts.createInCurrentState("TR: started on Art", onFirstLineStates,onOrAfterOnOrBefore);
+         InStateCohortDefinition onFirstLine = Cohorts.createInCurrentState("TR:onFollowingStateCohort",onFirstLineStates,"onDate");
+
           //1.1 Total number of males patients (< 1 years old) currently on ART
+
           AgeCohortDefinition patientWithUnder1=Cohorts.createUnderAgeCohort("patientWithUnder1",1);
           CompositionCohortDefinition malecurrentlyinArt = new CompositionCohortDefinition();
           malecurrentlyinArt.setName("malecurrentlyinArt");
@@ -720,7 +732,8 @@ public class SetupHMISRwandaReportBySite {
           CohortIndicator femaleArtbetweenabove20Ind=Indicators.newCohortIndicator("femaleArtbetweenabove20Ind",femaleArtbetweenabove20, null);
          
         //2.1 Total number of pediatric patients who are on First Line Regimen
-          CompositionCohortDefinition patientOnArtOrPMTCTPrograms = new CompositionCohortDefinition();
+
+         /* CompositionCohortDefinition patientOnArtOrPMTCTPrograms = new CompositionCohortDefinition();
           patientOnArtOrPMTCTPrograms.addParameter(new Parameter("onOrBefore","onOrBefore",Date.class));
           patientOnArtOrPMTCTPrograms.setName("patientOnArtOrPMTCTPrograms");
           patientOnArtOrPMTCTPrograms.getSearches().put("1",new Mapped<CohortDefinition>(onARTStateatTheEnd,ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore}")));
@@ -741,6 +754,22 @@ public class SetupHMISRwandaReportBySite {
           CohortIndicator notOnCurrentKaletraDrugOrderInd=Indicators.newCohortIndicator("notOnCurrentKaletraDrugOrderInd", notOnCurrentKaletraDrugOrder, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},endDate=${endDate},dateborn=${dateborn}"));
           notOnCurrentKaletraDrugOrderInd.addParameter(new Parameter("onOrBefore","onOrBefore",Date.class));
           notOnCurrentKaletraDrugOrderInd.addParameter(new Parameter("dateborn","dateborn",Date.class));
+          */
+         CompositionCohortDefinition patientsOnFirstLineComposition = new CompositionCohortDefinition();
+         patientsOnFirstLineComposition.addParameter(new Parameter("onOrBefore","onOrBefore",Date.class));
+         patientsOnFirstLineComposition.setName("patientOnFirstLine");
+         //patientsOnFirstLineComposition.getSearches().put("1",new Mapped<CohortDefinition>(onARTStateatTheEnd,ParameterizableUtil.createParameterMappings("onDate=${now}")));
+         patientsOnFirstLineComposition.getSearches().put("2",new Mapped<CohortDefinition>(onFirstLine,ParameterizableUtil.createParameterMappings("onDate=${now}")));
+         patientsOnFirstLineComposition.getSearches().put("3",new Mapped<CohortDefinition>(inPediAndAdultprogram,ParameterizableUtil.createParameterMappings("onDate=${now}")));
+
+         patientsOnFirstLineComposition.setCompositionString("2 OR 3");
+
+         CohortIndicator patientsOnFirstLineIndicator=Indicators.newCohortIndicator("patientsOnFirstLineIndicator", patientsOnFirstLineComposition, null);
+        // patientsOnFirstLineIndicator.addParameter(new Parameter("onOrBefore","onOrBefore",Date.class));
+        // PatientsOnFirstLineIndicator.addParameter(new Parameter("dateborn","dateborn",Date.class));
+
+
+
           
           //2.2 Total number of pediatric patients who are on Second Line Regimen 
           CompositionCohortDefinition onCurrentKaletraDrugOrderComp = new CompositionCohortDefinition();
@@ -748,9 +777,9 @@ public class SetupHMISRwandaReportBySite {
           onCurrentKaletraDrugOrderComp.addParameter(new Parameter("endDate", "endDate", Date.class));
           onCurrentKaletraDrugOrderComp.addParameter(new Parameter("dateborn","dateborn",Date.class));
           onCurrentKaletraDrugOrderComp.addParameter(new Parameter("onOrBefore","onOrBefore",Date.class));
-          onCurrentKaletraDrugOrderComp.getSearches().put("1",new Mapped<CohortDefinition>(patientOnArtOrPMTCTPrograms,ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore}")));
+          onCurrentKaletraDrugOrderComp.getSearches().put("1",new Mapped<CohortDefinition>(patientsOnFirstLineComposition,ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore}")));
           onCurrentKaletraDrugOrderComp.getSearches().put("2",new Mapped<CohortDefinition>(under15inDays,ParameterizableUtil.createParameterMappings("dateborn=${dateborn}")));
-          onCurrentKaletraDrugOrderComp.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
+       //   onCurrentKaletraDrugOrderComp.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
           onCurrentKaletraDrugOrderComp.setCompositionString("1 AND 2 AND 3");
           CohortIndicator activeOnCurrentKaletraDrugOrderInd=Indicators.newCohortIndicator("activeOnCurrentKaletraDrugOrderInd", onCurrentKaletraDrugOrderComp,ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},dateborn=${dateborn},endDate=${endDate}"));
           activeOnCurrentKaletraDrugOrderInd.addParameter(new Parameter("dateborn","dateborn",Date.class));
@@ -759,13 +788,12 @@ public class SetupHMISRwandaReportBySite {
           //2.3 Total number of pediatric patients who are on Third Line Regimen 
          // 2.4 Total number of patients aged between 10-19 on ART 1st line regimen 
           AgeCohortDefinition patientWith10To19 = Cohorts.createXtoYAgeCohort("patientWith10To19", 10, 19);
-          
           CompositionCohortDefinition patients10and19on1stLine = new CompositionCohortDefinition();
           patients10and19on1stLine.setName("patients10and19on1stLine");
           patients10and19on1stLine.addParameter(new Parameter("endDate", "endDate", Date.class));
           patients10and19on1stLine.getSearches().put("1",new Mapped<CohortDefinition>(onARTStateHIVClinic,null));
           patients10and19on1stLine.getSearches().put("2",new Mapped<CohortDefinition>(patientWith10To19,null));
-          patients10and19on1stLine.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
+       //   patients10and19on1stLine.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
           patients10and19on1stLine.setCompositionString("1 AND 2 AND (NOT 3)");
           CohortIndicator patients10and19on1stLineInd=Indicators.newCohortIndicator("patients10and19on1stLineInd", patients10and19on1stLine, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
           
@@ -775,7 +803,7 @@ public class SetupHMISRwandaReportBySite {
           patients10and19on2ndLine.addParameter(new Parameter("endDate", "endDate", Date.class));
           patients10and19on2ndLine.getSearches().put("1",new Mapped<CohortDefinition>(onARTStateHIVClinic,null));
           patients10and19on2ndLine.getSearches().put("2",new Mapped<CohortDefinition>(patientWith10To19,null));
-          patients10and19on2ndLine.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
+      //    patients10and19on2ndLine.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
           patients10and19on2ndLine.setCompositionString("1 AND 2 AND 3");
           CohortIndicator patients10and19on2ndLineInd=Indicators.newCohortIndicator("patients10and19on2ndLineInd", patients10and19on2ndLine, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
          
@@ -787,7 +815,7 @@ public class SetupHMISRwandaReportBySite {
           adultsnotOnCurrentKaletraDrugOrder.addParameter(new Parameter("dateborn","dateborn",Date.class));
           adultsnotOnCurrentKaletraDrugOrder.getSearches().put("1",new Mapped<CohortDefinition>(onARTStateHIVClinic,null));
           adultsnotOnCurrentKaletraDrugOrder.getSearches().put("2",new Mapped<CohortDefinition>(over15inDays,ParameterizableUtil.createParameterMappings("dateborn=${dateborn}")));
-          adultsnotOnCurrentKaletraDrugOrder.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
+        //  adultsnotOnCurrentKaletraDrugOrder.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
           adultsnotOnCurrentKaletraDrugOrder.setCompositionString("1 AND 2 AND (NOT 3)");
           CohortIndicator notoadultsOnCurrentKaletraDrugOrderInd=Indicators.newCohortIndicator("notoadultsOnCurrentKaletraDrugOrderInd", adultsnotOnCurrentKaletraDrugOrder, ParameterizableUtil.createParameterMappings("dateborn=${dateborn},endDate=${endDate}"));
           notoadultsOnCurrentKaletraDrugOrderInd.addParameter(new Parameter("dateborn","dateborn",Date.class));  
@@ -799,7 +827,7 @@ public class SetupHMISRwandaReportBySite {
           adultonCurrentKaletraDrugOrderCompo.addParameter(new Parameter("dateborn","dateborn",Date.class));
           adultonCurrentKaletraDrugOrderCompo.getSearches().put("1",new Mapped<CohortDefinition>(onARTStateHIVClinic,null));
           adultonCurrentKaletraDrugOrderCompo.getSearches().put("2",new Mapped<CohortDefinition>(over15inDays,ParameterizableUtil.createParameterMappings("dateborn=${dateborn}")));
-          adultonCurrentKaletraDrugOrderCompo.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
+        //  adultonCurrentKaletraDrugOrderCompo.getSearches().put("3",new Mapped<CohortDefinition>(onCurrentKaletraDrugOrder,ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
           adultonCurrentKaletraDrugOrderCompo.setCompositionString("1 AND 2 AND 3");
           CohortIndicator adultonCurrentKaletraDrugOrderCompoInd=Indicators.newCohortIndicator("adultonCurrentKaletraDrugOrderCompoInd", adultonCurrentKaletraDrugOrderCompo, ParameterizableUtil.createParameterMappings("dateborn=${dateborn},endDate=${endDate}"));
           adultonCurrentKaletraDrugOrderCompoInd.addParameter(new Parameter("dateborn","dateborn",Date.class));
@@ -1047,12 +1075,21 @@ public class SetupHMISRwandaReportBySite {
            dsd.addColumn("1b.10","rwandareports.tracnetreport.indicator.art.female15to19CurrentOnArv",new Mapped(femaleArtbetween15and19Ind,null),"");
            dsd.addColumn("1b.11","rwandareports.tracnetreport.indicator.art.male20orAboveCurrentOnArv",new Mapped(maleArtbetweenabove20Ind,null), "");
            dsd.addColumn("1b.12","rwandareports.tracnetreport.indicator.art.female20orAboveCurrentOnArv",new Mapped(femaleArtbetweenabove20Ind,null), "");
-           /*dsd.addColumn("2b.1","rwandareports.tracnetreport.indicator.art.patientsonFirstLine",new Mapped(notOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},dateborn=${endDate},onOrBefore=${endDate}")), "");
-           dsd.addColumn("2b.2","rwandareports.tracnetreport.indicator.art.patientsonSecondLine",new Mapped(activeOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},dateborn=${endDate},onOrBefore=${endDate}")), "");
-*/
+
+          //================================================================================================================onFirstLine============================================================================
+
+           dsd.addColumn("2b.1","rwandareports.tracnetreport.indicator.art.patientsonFirstLine",new Mapped(patientsOnFirstLineIndicator,null),"");
+
+        //   dsd.addColumn("2b.1","rwandareports.tracnetreport.indicator.art.patientsonFirstLine",new Mapped(notOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},dateborn=${endDate},onOrBefore=${endDate}")), "");
+
+         //dsd.addColumn("2b.2","rwandareports.tracnetreport.indicator.art.patientsonSecondLine",new Mapped(activeOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("endDate=${endDate},dateborn=${endDate},onOrBefore=${endDate}")), "");
+
+         //=============================================================================================================================================================================================
+
+
             //dsd.addColumn("2.3","rwandareports.tracnetreport.indicator.art.patientsonThirdLine",new Mapped(pediOnArtStateinWhostage4Ind,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),"");
-           dsd.addColumn("2b.4","rwandareports.tracnetreport.indicator.art.adults10to19onFirstLine",new Mapped(patients10and19on1stLineInd,ParameterizableUtil.createParameterMappings("endDate=${endDate}")),"");
-           dsd.addColumn("2b.5","rwandareports.tracnetreport.indicator.art.adults10to19onSecondLine",new Mapped(patients10and19on2ndLineInd,ParameterizableUtil.createParameterMappings("endDate=${endDate}")),"");
+         ///////  dsd.addColumn("2b.4","rwandareports.tracnetreport.indicator.art.adults10to19onFirstLine",new Mapped(patients10and19on1stLineInd,ParameterizableUtil.createParameterMappings("endDate=${endDate}")),"");
+         ////// dsd.addColumn("2b.5","rwandareports.tracnetreport.indicator.art.adults10to19onSecondLine",new Mapped(patients10and19on2ndLineInd,ParameterizableUtil.createParameterMappings("endDate=${endDate}")),"");
           // dsd.addColumn("2.6","rwandareports.tracnetreport.indicator.art.adults10to19onThirdLine",new Mapped(pediOnArtStateinWhostage1Ind,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")),"");
            /*dsd.addColumn("2b.7","rwandareports.tracnetreport.indicator.art.adults15orMoreFirstLine",new Mapped(notoadultsOnCurrentKaletraDrugOrderInd,ParameterizableUtil.createParameterMappings("dateborn=${endDate},endDate=${endDate}")),"");
            dsd.addColumn("2b.8","rwandareports.tracnetreport.indicator.art.adults15orMoreSecondLine",new Mapped(adultonCurrentKaletraDrugOrderCompoInd,ParameterizableUtil.createParameterMappings("dateborn=${endDate},endDate=${endDate}")),"");
@@ -1081,7 +1118,10 @@ public class SetupHMISRwandaReportBySite {
         }
         
         private void setupProperties() {
-            adulthivProgram = gp.getProgram(GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
+
+           patientsOnFirstLine = gp.getProgramWorkflowState(GlobalPropertiesManagement.PATIENTS_ON_FIRST_LINE,GlobalPropertiesManagement.ON_FIRST_LINE_WORKFLOW,GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
+          // log.info(" hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"+patientsOnFirstLine.getName());
+           adulthivProgram = gp.getProgram(GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
            pediatrichivProgram = gp.getProgram(GlobalPropertiesManagement.PEDI_HIV_PROGRAM);
            // pmtctcombinedMother = gp.getProgram(GlobalPropertiesManagement.PMTCT_COMBINED_MOTHER_PROGRAM);
             pmtctPregnancyProgram=gp.getProgram(GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);

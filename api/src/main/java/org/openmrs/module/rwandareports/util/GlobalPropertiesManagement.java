@@ -135,7 +135,9 @@ public class GlobalPropertiesManagement {
 		return Integer.parseInt(globalProperty);
 	}
 
-	//Programs
+	// Programs
+
+
 	public final static String ADULT_HIV_PROGRAM = "reports.adulthivprogramname"; 
 	
 	public final static String PMTCT_COMBINED_CLINIC_PROGRAM = "reports.pmtctcombinedprogramname";
@@ -171,6 +173,9 @@ public class GlobalPropertiesManagement {
 	public final static String PDC_PROGRAM = "reports.pdcProgram";
 	
 	//ProgramWorkflow
+
+	public final static String ON_FIRST_LINE_WORKFLOW = "reports.OnFirstLineWorkFlow";
+
 	public final static String TREATMENT_STATUS_WORKFLOW = "reports.hivworkflowstatus";
 	
 	public final static String TREATMENT_GROUP_WORKFLOW = "reports.hivtreatmentstatus";
@@ -213,6 +218,9 @@ public class GlobalPropertiesManagement {
 	
 	
 	//ProgramWorkflowState
+
+	public final static String PATIENTS_ON_FIRST_LINE = "reports.patientsOnFirstLine";
+
 	public final static String ON_ANTIRETROVIRALS_STATE = "reports.hivonartstate";
 	
 	public final static String FOLLOWING_STATE = "reports.hivpreartstate";
